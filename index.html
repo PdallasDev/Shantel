@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chantel’s Birthday Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #1b0f2e;
+      --plum: #2d1747;
+      --rose: #ff6f91;
+      --gold: #ffd479;
+      --blush: #ffe3ea;
+      --text: #f6ecff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--text);
+      background: radial-gradient(ellipse at 50% -10%, #5a2a86 0%, var(--plum) 40%, var(--night) 100%) fixed;
+      min-height: 100vh;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 56px 20px 80px; text-align: center; }
+
+    /* Hero */
+    .hero { position: relative; padding-bottom: 24px; }
+    .hero::before {
+      content: ""; position: absolute; left: 50%; top: -56px; width: 520px; max-width: 120%; height: 460px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 212, 121, .28), rgba(255, 212, 121, 0) 70%);
+      pointer-events: none;
+    }
+    .kicker { font-weight: 300; letter-spacing: .04em; color: var(--blush); }
+    .name {
+      font-family: 'Great Vibes', cursive; font-weight: 400;
+      font-size: clamp(64px, 17vw, 120px); line-height: 1.05; margin: 4px 0 8px;
+      color: var(--gold); text-shadow: 0 0 40px rgba(255, 212, 121, .35);
+    }
+    .sub { max-width: 34ch; margin: 0 auto 36px; font-weight: 300; color: var(--blush); }
+
+    .countdown { display: flex; justify-content: center; gap: clamp(8px, 3vw, 20px); position: relative; }
+    .unit {
+      min-width: 74px; padding: 16px 10px 12px; border-radius: 18px;
+      background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 212, 121, .35);
+    }
+    .unit b { display: block; font-size: clamp(30px, 9vw, 52px); font-weight: 600; line-height: 1.1; color: #fff; font-variant-numeric: tabular-nums; }
+    .unit span { font-size: 13px; font-weight: 300; color: var(--blush); }
+    .when { margin-top: 20px; font-size: 14px; font-weight: 300; color: var(--blush); }
+
+    .birthday { display: none; }
+    .is-birthday .countdown, .is-birthday .when, .is-birthday .before { display: none; }
+    .is-birthday .birthday { display: block; }
+    .birthday h2 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: clamp(44px, 11vw, 76px); color: var(--rose); line-height: 1.1; }
+
+    /* Letter */
+    .letter {
+      margin: 64px auto 0; padding: 32px 26px; max-width: 600px; text-align: left;
+      background: rgba(255, 255, 255, .06); border-left: 3px solid var(--rose); border-radius: 6px 18px 18px 6px;
+    }
+    .letter h2 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 38px; color: var(--gold); margin-bottom: 8px; }
+    .letter p { margin-bottom: 14px; font-weight: 300; }
+    .sign { color: var(--blush); }
+
+    /* Compliments */
+    .adore { margin-top: 64px; }
+    .adore h2 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 40px; color: var(--gold); margin-bottom: 18px; }
+    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto; }
+    .chips li {
+      list-style: none; padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 300;
+      background: rgba(255, 111, 145, .14); border: 1px solid rgba(255, 111, 145, .45); color: var(--blush);
+    }
+
+    /* Gallery */
+    .gallery { margin-top: 64px; }
+    .gallery h2 { font-family: 'Great Vibes', cursive; font-weight: 400; font-size: 40px; color: var(--gold); margin-bottom: 20px; }
+    .photo-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; }
+    figure { width: 210px; }
+    figure img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; border: 2px solid rgba(255, 212, 121, .45); background: var(--plum); display: block; }
+    figcaption { margin-top: 8px; font-size: 14px; font-weight: 300; color: var(--blush); }
+
+    /* Button + song */
+    .surprise { margin-top: 64px; }
+    button {
+      font: inherit; font-weight: 600; font-size: 17px; cursor: pointer;
+      padding: 14px 32px; border: 0; border-radius: 999px; color: var(--night);
+      background: linear-gradient(135deg, var(--gold), var(--rose));
+      box-shadow: 0 8px 28px rgba(255, 111, 145, .35);
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0) scale(.98); }
+    button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .note { min-height: 1.7em; margin-top: 16px; color: var(--blush); font-weight: 300; }
+
+    /* Confetti */
+    .confetti { position: fixed; top: -12px; width: 10px; height: 14px; border-radius: 2px; pointer-events: none; z-index: 10; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
+    @media (prefers-reduced-motion: reduce) {
+      .confetti { display: none; }
+      html { scroll-behavior: auto; }
+      button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="page">
+
+    <section class="hero">
+      <p class="kicker before">Counting down to the day God made you</p>
+      <h1 class="name">Shantel</h1>
+
+      <p class="sub before">Anointed singer. Selfless queen. Your birthday is almost here.</p>
+
+      <div class="countdown" id="countdown" role="timer" aria-live="off">
+        <div class="unit"><b id="d">0</b><span>days</span></div>
+        <div class="unit"><b id="h">0</b><span>hours</span></div>
+        <div class="unit"><b id="m">0</b><span>minutes</span></div>
+        <div class="unit"><b id="s">0</b><span>seconds</span></div>
+      </div>
+      <p class="when">Friday, 30 October</p>
+
+      <div class="birthday">
+        <h2>Happy Birthday, my love!</h2>
+        <p class="sub">Today the world celebrates the woman who always celebrates everyone else.</p>
+      </div>
+    </section>
+
+  <section class="letter">
+      <h2>My Love</h2>
+      <p>
+        Shantel, you give so much and never ask for anything back. This Friday it’s your turn to be
+        spoiled. You’re beautiful inside and out, your smile makes my whole day, and I’m so lucky
+        to be yours. Happy birthday, my love 🎂
+      </p>
+      <p class="sign">Forever yours,<br>Papii 💖</p>
+    </section>
+
+    <section class="adore">
+      <h2>Reasons I Adore You 💗</h2>
+      <ul class="chips">
+        <li>Prettiest smile in any room 😍</li>
+        <li>Heart bigger than the sky 🤍</li>
+        <li>Mama of the year 👑</li>
+        <li>A voice that feels like worship 🎤</li>
+        <li>Gives without ever asking back 🎁</li>
+        <li>Softest soul, strongest spirit ✨</li>
+      </ul>
+    </section>
+
+    <section class="gallery">
+      <h2>Our Moments 📸</h2>
+      <div class="photo-row">
+        <figure>
+          <img src="heart.jpeg" alt="Chantel worshipping">
+          <figcaption>Anointed worshiper 🎶</figcaption>
+        </figure>
+        <figure>
+          <img src="Smiles.jpeg" alt="Chantel smiling">
+          <figcaption>A heart that always gives ❤️</figcaption>
+        </figure>
+        <figure>
+          <img src="Screen.jpeg" alt="Chantel looking radiant">
+          <figcaption>Radiant beauty 😘</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="surprise">
+      <button id="surpriseBtn" type="button">Click Me 🎁</button>
+      <p class="note" id="note" aria-live="polite"></p>
+      <audio id="surpriseAudio" src="song.mp3" preload="auto"></audio>
+    </section>
+
+  </div>
+
+  <script>
+    // Birthday: Friday 30 October 2026, 00:00 (viewer's local time)
+    var BIRTHDAY = new Date(2026, 9, 30, 0, 0, 0);
+
+    // Add ?test=1 to the URL to preview the birthday screen
+    var forceBirthday = new URLSearchParams(location.search).get('test') === '1';
+
+    var page = document.getElementById('page');
+    var els = {
+      d: document.getElementById('d'),
+      h: document.getElementById('h'),
+      m: document.getElementById('m'),
+      s: document.getElementById('s')
+    };
+    var confettiDone = false;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      var diff = BIRTHDAY - new Date();
+      if (forceBirthday || diff <= 0) {
+        page.classList.add('is-birthday');
+        if (!confettiDone) { confettiDone = true; confetti(120); }
+        clearInterval(timer);
+        return;
+      }
+      var total = Math.floor(diff / 1000);
+      els.d.textContent = Math.floor(total / 86400);
+      els.h.textContent = pad(Math.floor((total % 86400) / 3600));
+      els.m.textContent = pad(Math.floor((total % 3600) / 60));
+      els.s.textContent = pad(total % 60);
+    }
+
+    function confetti(count) {
+      var colors = ['#ffd479', '#ff6f91', '#ffe3ea', '#c79bff', '#ffffff'];
+      for (var i = 0; i < count; i++) {
+        var c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = (3 + Math.random() * 3) + 's';
+        c.style.animationDelay = (Math.random() * 1.5) + 's';
+        document.body.appendChild(c);
+        setTimeout(function (el) { el.remove(); }.bind(null, c), 8000);
+      }
+    }
+
+    var audio = document.getElementById('surpriseAudio');
+    var btn = document.getElementById('surpriseBtn');
+    var note = document.getElementById('note');
+
+    btn.addEventListener('click', function () {
+      if (!audio.paused) {
+        audio.pause();
+        btn.textContent = 'Click Me 🎁';
+        note.textContent = '';
+        return;
+      }
+      audio.play().then(function () {
+        btn.textContent = 'Pause the song ⏸';
+        note.textContent = 'I love you, Chantel 😘 Enjoy the song!';
+        confetti(80);
+      }).catch(function () {
+        note.textContent = 'Song could not play. Check that song.mp3 is next to this page.';
+      });
+    });
+
+    audio.addEventListener('ended', function () { btn.textContent = 'Play again 🎁'; });
+
+    var timer = setInterval(tick, 1000);
+    tick();
+  </script>
+</body>
+</html>
